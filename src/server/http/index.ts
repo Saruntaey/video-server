@@ -2,10 +2,18 @@ import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
 import fileUpload from "express-fileupload"
-import path from "path"
+
+export type HttpServerConfig = {
+  port: string
+  tmpFileDir: string
+}
 
 export class HttpServer {
-  constructor(private videoService: VideoService) {}
+  constructor(
+    private videoService: VideoService,
+    private config: HttpServerConfig,
+  ) {}
+
   public start = () => {
     const app = express()
 
@@ -14,7 +22,7 @@ export class HttpServer {
     app.use(
       fileUpload({
         useTempFiles: true,
-        tempFileDir: path.join(__dirname, "../../../files/tmp"),
+        tempFileDir: this.config.tmpFileDir,
       }),
     )
 
@@ -23,8 +31,8 @@ export class HttpServer {
     })
     app.use("/videos", this.videoRoute)
 
-    app.listen("8080", () => {
-      console.log("Listining on 8080")
+    app.listen(this.config.port, () => {
+      console.log(`Listining on ${this.config.port}`)
     })
   }
 
