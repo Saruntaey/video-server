@@ -1,7 +1,8 @@
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
-import { Readable } from "stream"
+import fileUpload from "express-fileupload"
+import path from "path"
 
 export class HttpServer {
   constructor(private videoService: VideoService) {}
@@ -10,6 +11,12 @@ export class HttpServer {
 
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: path.join(__dirname, "../../../files/tmp"),
+      }),
+    )
 
     app.get("/", (req: Request, res: Response, next: NextFunction) => {
       res.send("Hello there")
@@ -34,6 +41,14 @@ export class HttpServer {
   }
 
   private storeVideo = (req: Request, res: Response, next: NextFunction) => {
+    if (req.files) {
+      console.log("got files")
+      if (!(req.files.image instanceof Array)) {
+        const { tempFilePath, mimetype } = req.files.image
+        console.log("path", tempFilePath)
+        console.log("mime", mimetype)
+      }
+    }
     this.videoService.encrypt(req.body)
     res.send("store video")
   }
