@@ -1,3 +1,4 @@
 import { foo } from "./internal/service/demo"
-console.log(foo())
-console.log("Hello world")
+foo()
+// console.log(foo())
+console.log("bye there")

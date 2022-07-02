@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -rf build",
-    "build": "tsc && ef-tspm",
+    "build": "tsc",
     "start": "node build/index.js",
-    "all": "pnpm clean && pnpm build && pnpm start"
+    "dev:build": "tsc -w",
+    "dev:start": "nodemon build/index.js",
+    "dev": "concurrently pnpm:dev:*"
   },
   "keywords": [],
   "author": "",
