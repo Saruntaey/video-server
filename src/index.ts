@@ -1,4 +1,5 @@
-import { foo } from "./internal/service/demo"
-foo()
-// console.log(foo())
-console.log("bye there")
+import { HttpServer } from "./server/http"
+
+const server = new HttpServer()
+
+server.start()
