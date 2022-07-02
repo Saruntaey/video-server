@@ -1,6 +1,6 @@
-import { ReadStream, WriteStream } from "fs"
+import { Readable, Writable } from "stream"
 
 export interface VideoService {
-  encrypt: (readStream: ReadStream) => string
-  serve: (id: string, writeStream: WriteStream) => void
+  encrypt: (r: Readable) => string
+  serve: (id: string, w: Writable) => void
 }

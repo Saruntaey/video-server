@@ -1,10 +1,15 @@
 import express, { Request, Response, NextFunction } from "express"
+import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
+import { Readable } from "stream"
 
 export class HttpServer {
   constructor(private videoService: VideoService) {}
   public start = () => {
     const app = express()
+
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
 
     app.get("/", (req: Request, res: Response, next: NextFunction) => {
       res.send("Hello there")
@@ -23,14 +28,13 @@ export class HttpServer {
     return route
   }
 
-  private streamVideo(req: Request, res: Response, next: NextFunction) {
-    console.log("in serve video")
-
-    res.send("serveVideo")
+  private streamVideo = (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params
+    this.videoService.serve(id, res)
   }
 
-  private storeVideo(req: Request, res: Response, next: NextFunction) {
-    console.log("in store video")
+  private storeVideo = (req: Request, res: Response, next: NextFunction) => {
+    this.videoService.encrypt(req.body)
     res.send("store video")
   }
 }
