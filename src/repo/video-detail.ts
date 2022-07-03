@@ -10,7 +10,7 @@ type VideoDetailMongo = {
 
 export class VideoDetailRepoMongo {
   private collection: Collection<VideoDetailMongo>
-  constructor(private db: Db) {
+  constructor(db: Db) {
     this.collection = db.collection(MongoCollection.VideoDetail)
   }
 
