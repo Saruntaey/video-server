@@ -1,6 +1,5 @@
 import fs from "fs"
 import { Readable } from "stream"
-import path from "path"
 import ffmpeg from "fluent-ffmpeg"
 import { VideoFilter } from "../internal/model/video"
 import { randomBytes } from "crypto"
@@ -90,9 +89,12 @@ export class VideoRepoFile {
   }
 
   get(filter: VideoFilter): Readable {
-    const filePath = path.join(__dirname, "../../files/demo.txt")
+    let fileName = "playlist.m3u8"
+    if (filter.resolution) {
+      fileName = `${filter.resolution}.m3u8`
+    }
+    const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
     const readStream = fs.createReadStream(filePath)
-    readStream.push(`course: ${filter.courseId}\nvideo: ${filter.id}\n`)
     return readStream
   }
 }

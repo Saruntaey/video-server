@@ -23,11 +23,8 @@ export class VideoService {
     return id
   }
 
-  serve(videoFilter: VideoFilter, w: Writable): void {
-    const readStream = this.videoRepo.get(videoFilter)
-    readStream.pipe(w)
-    readStream.on("error", (err) => {
-      console.log("fail to stream video", err)
-    })
+  serve(videoFilter: VideoFilter): Readable {
+    const readable = this.videoRepo.get(videoFilter)
+    return readable
   }
 }

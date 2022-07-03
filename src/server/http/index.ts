@@ -1,4 +1,6 @@
 import fs from "fs"
+import { Readable } from "stream"
+import readline from "readline"
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
@@ -8,6 +10,7 @@ import { VideoFilter, VideoEncryptInput } from "../../internal/model/video"
 export type HttpServerConfig = {
   port: string
   tmpFileDir: string
+  domain: string
 }
 
 export class HttpServer {
@@ -47,11 +50,15 @@ export class HttpServer {
 
   private streamVideo = (req: Request, res: Response, next: NextFunction) => {
     const { id, courseId } = req.params
+    const { r } = req.query
     const videoFilter: VideoFilter = {
       id,
       courseId,
+      resolution: typeof r === "string" ? r : undefined,
     }
-    this.videoService.serve(videoFilter, res)
+    const readable = this.videoService.serve(videoFilter)
+    const readableWithUri = this.attachVideoUri(readable, courseId, id)
+    readableWithUri.pipe(res)
   }
 
   private storeVideo = (req: Request, res: Response, next: NextFunction) => {
@@ -69,5 +76,48 @@ export class HttpServer {
       }
     }
     res.send("store video")
+  }
+
+  private attachVideoUri = (
+    r: Readable,
+    courseId: string,
+    videoId: string,
+  ): Readable => {
+    const readable = new Readable()
+    readable._read = () => {}
+    const rl = readline.createInterface({
+      input: r,
+      crlfDelay: Infinity,
+    })
+    rl.on("line", (line) => {
+      if (line.startsWith("#")) {
+        if (line.startsWith("#EXT-X-KEY")) {
+          const data = line.split(",")
+          data.forEach((d, idx) => {
+            if (idx !== 0) {
+              readable.push(",")
+            }
+            if (d.startsWith("URI")) {
+              readable.push(
+                `URI="${this.config.domain}/key?c=${courseId}&v=${videoId}"`,
+              )
+            } else {
+              readable.push(`${d}`)
+            }
+          })
+          readable.push("\n")
+        } else {
+          readable.push(`${line}\n`)
+        }
+      } else {
+        readable.push(
+          `${this.config.domain}/courses/${courseId}/video/${videoId}/${line}\n`,
+        )
+      }
+    })
+    rl.on("close", () => {
+      readable.push(null)
+    })
+    return readable
   }
 }

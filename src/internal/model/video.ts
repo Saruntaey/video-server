@@ -5,6 +5,7 @@ export type VideoEncryptInput = {
 export type VideoFilter = {
   id: string
   courseId: string
+  resolution?: string
 }
 
 export type VideoDetail = {
