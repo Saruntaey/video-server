@@ -1,6 +1,6 @@
-import { ReadStream } from "fs"
+import { Readable } from "stream"
 
 export interface VideoRepo {
-  store: (readStream: ReadStream) => void
-  get: (id: string) => ReadStream
+  store: (readStream: Readable) => string
+  get: (id: string) => Readable
 }

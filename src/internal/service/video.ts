@@ -7,6 +7,8 @@ export class VideoService {
 
   encrypt(r: Readable): string {
     const id = genId()
+    const videoKey = this.videoRepo.store(r)
+    console.log("key", videoKey)
     return id
   }
 

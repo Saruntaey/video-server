@@ -1,3 +1,4 @@
+import fs from "fs"
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
@@ -55,9 +56,10 @@ export class HttpServer {
         const { tempFilePath, mimetype } = req.files.image
         console.log("path", tempFilePath)
         console.log("mime", mimetype)
+        const r = fs.createReadStream(tempFilePath)
+        this.videoService.encrypt(r)
       }
     }
-    this.videoService.encrypt(req.body)
     res.send("store video")
   }
 }
