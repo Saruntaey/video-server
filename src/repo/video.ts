@@ -39,7 +39,7 @@ export class VideoRepoFile {
       "-hls_playlist_type vod",
       "-hls_enc 1",
       `-hls_enc_key ${key}`,
-      `-hls_enc_key_url place-holder.key`,
+      `-hls_enc_key_url ${filter.courseId}_${filter.id}.key`,
     ]
     const command = ffmpeg(r).videoCodec("libx264").audioCodec("aac")
     if (!fs.existsSync(outdir)) {
