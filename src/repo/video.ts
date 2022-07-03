@@ -2,7 +2,7 @@ import fs from "fs"
 import { Readable } from "stream"
 import path from "path"
 import ffmpeg from "fluent-ffmpeg"
-import { Video } from "../internal/model/video"
+import { VideoFilter } from "../internal/model/video"
 import { randomBytes } from "crypto"
 
 export type VideoRepoFileConfig = {
@@ -11,7 +11,7 @@ export type VideoRepoFileConfig = {
 export class VideoRepoFile {
   constructor(private config: VideoRepoFileConfig) {}
 
-  store(filter: Video, r: Readable): string {
+  store(filter: VideoFilter, r: Readable): string {
     const key = randomBytes(16).toString("base64")
     const outdir = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}`
     const multipleResolution = [
@@ -39,7 +39,7 @@ export class VideoRepoFile {
       "-hls_playlist_type vod",
       "-hls_enc 1",
       `-hls_enc_key ${key}`,
-      `-hls_enc_key_url ${key}.key`,
+      `-hls_enc_key_url place-holder.key`,
     ]
     const command = ffmpeg(r).videoCodec("libx264").audioCodec("aac")
     if (!fs.existsSync(outdir)) {
@@ -89,7 +89,7 @@ export class VideoRepoFile {
     return key
   }
 
-  get(filter: Video): Readable {
+  get(filter: VideoFilter): Readable {
     const filePath = path.join(__dirname, "../../files/demo.txt")
     const readStream = fs.createReadStream(filePath)
     readStream.push(`course: ${filter.courseId}\nvideo: ${filter.id}\n`)

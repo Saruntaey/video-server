@@ -1,7 +1,7 @@
 import { Readable, Writable } from "stream"
-import { Video, VideoEncryptInput } from "../../model/video"
+import { VideoFilter, VideoEncryptInput } from "../../model/video"
 
 export interface VideoService {
   encrypt: (input: VideoEncryptInput, r: Readable) => string
-  serve: (videoFilter: Video, w: Writable) => void
+  serve: (videoFilter: VideoFilter, w: Writable) => void
 }

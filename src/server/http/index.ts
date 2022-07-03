@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
 import fileUpload from "express-fileupload"
-import { Video, VideoEncryptInput } from "../../internal/model/video"
+import { VideoFilter, VideoEncryptInput } from "../../internal/model/video"
 
 export type HttpServerConfig = {
   port: string
@@ -47,7 +47,7 @@ export class HttpServer {
 
   private streamVideo = (req: Request, res: Response, next: NextFunction) => {
     const { id, courseId } = req.params
-    const videoFilter: Video = {
+    const videoFilter: VideoFilter = {
       id,
       courseId,
     }

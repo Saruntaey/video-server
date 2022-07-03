@@ -1,7 +1,7 @@
 import { Readable, Writable } from "stream"
 import { VideoRepo } from "../port/repo/video"
 import { genId } from "../model/id"
-import { Video, VideoEncryptInput, VideoDetail } from "../model/video"
+import { VideoFilter, VideoEncryptInput, VideoDetail } from "../model/video"
 
 export class VideoService {
   constructor(private videoRepo: VideoRepo) {}
@@ -9,7 +9,7 @@ export class VideoService {
   encrypt(input: VideoEncryptInput, r: Readable): string {
     const id = genId()
     const { courseId } = input
-    const videoFilter: Video = {
+    const videoFilter: VideoFilter = {
       id,
       courseId,
     }
@@ -23,7 +23,7 @@ export class VideoService {
     return id
   }
 
-  serve(videoFilter: Video, w: Writable): void {
+  serve(videoFilter: VideoFilter, w: Writable): void {
     const readStream = this.videoRepo.get(videoFilter)
     readStream.pipe(w)
     readStream.on("error", (err) => {

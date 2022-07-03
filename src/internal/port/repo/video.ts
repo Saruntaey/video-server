@@ -1,7 +1,7 @@
 import { Readable } from "stream"
-import { Video } from "../../model/video"
+import { VideoFilter } from "../../model/video"
 
 export interface VideoRepo {
-  store: (filter: Video, r: Readable) => string
-  get: (filter: Video) => Readable
+  store: (filter: VideoFilter, r: Readable) => string
+  get: (filter: VideoFilter) => Readable
 }
