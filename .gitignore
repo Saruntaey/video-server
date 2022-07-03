@@ -3,3 +3,4 @@ build
 files
 .DS_Store
 *.key
+db

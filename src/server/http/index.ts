@@ -36,6 +36,8 @@ export class HttpServer {
     })
     app.use("/courses", this.videoRoute)
 
+    app.get("/key", this.getKey)
+
     app.listen(this.config.port, () => {
       console.log(`Listining on ${this.config.port}`)
     })
@@ -78,6 +80,16 @@ export class HttpServer {
     res.send("store video")
   }
 
+  private getKey = async (req: Request, res: Response, next: NextFunction) => {
+    const { v: videoId } = req.query
+    if (typeof videoId === "string") {
+      const key = await this.videoService.getKey(videoId)
+      res.send(key)
+      return
+    }
+    res.send(400)
+  }
+
   private attachVideoUri = (
     r: Readable,
     courseId: string,
@@ -98,9 +110,7 @@ export class HttpServer {
               readable.push(",")
             }
             if (d.startsWith("URI")) {
-              readable.push(
-                `URI="${this.config.domain}/key?c=${courseId}&v=${videoId}"`,
-              )
+              readable.push(`URI="${this.config.domain}/key?v=${videoId}"`)
             } else {
               readable.push(`${d}`)
             }

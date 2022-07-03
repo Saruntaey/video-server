@@ -1,0 +1,9 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:5.0.6-focal
+    ports:
+      - 27017:27017
+    volumes:
+      - ./db/mongo:/data/db
+    # entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]

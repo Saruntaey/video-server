@@ -1,12 +1,16 @@
 import { Readable, Writable } from "stream"
 import { VideoRepo } from "../port/repo/video"
+import { VideoDetailRepo } from "../port/repo/video-detail"
 import { genId } from "../model/id"
 import { VideoFilter, VideoEncryptInput, VideoDetail } from "../model/video"
 
 export class VideoService {
-  constructor(private videoRepo: VideoRepo) {}
+  constructor(
+    private videoRepo: VideoRepo,
+    private videoDeatilRepo: VideoDetailRepo,
+  ) {}
 
-  encrypt(input: VideoEncryptInput, r: Readable): string {
+  async encrypt(input: VideoEncryptInput, r: Readable): Promise<string> {
     const id = genId()
     const { courseId } = input
     const videoFilter: VideoFilter = {
@@ -19,12 +23,20 @@ export class VideoService {
       courseId,
       key: videoKey,
     }
-    console.log("newVideo", newVideo)
+    await this.videoDeatilRepo.store(newVideo)
     return id
   }
 
   serve(videoFilter: VideoFilter): Readable {
     const readable = this.videoRepo.get(videoFilter)
     return readable
+  }
+
+  async getKey(videoId: string): Promise<string | null> {
+    const record = await this.videoDeatilRepo.get(videoId)
+    if (record) {
+      return record.key
+    }
+    return null
   }
 }
