@@ -3,6 +3,7 @@ import { Readable } from "stream"
 import readline from "readline"
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
+import cors from "cors"
 import { VideoService } from "../../internal/port/service/video"
 import fileUpload from "express-fileupload"
 import { VideoFilter, VideoEncryptInput } from "../../internal/model/video"
@@ -22,6 +23,7 @@ export class HttpServer {
   public start = () => {
     const app = express()
 
+    app.use(cors())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(
@@ -32,7 +34,31 @@ export class HttpServer {
     )
 
     app.get("/", (req: Request, res: Response, next: NextFunction) => {
-      res.send("Hello there")
+      const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <script src="https://cdn.tailwindcss.com"></script>
+          <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet" />
+          <title>Document</title>
+        </head>
+        <body>
+          <video
+            controls
+            preload="auto"
+            class="video-js"
+            data-setup="{'fluid': true}"
+          >
+            <source src="/courses/cal-1/videos/LDETCJ7KyJ9kdhq76flKv?r=240p" type="application/x-mpegURL" />
+          </video>
+          <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+        </body>
+      </html>
+      `
+      res.send(html)
     })
     app.use("/courses", this.videoRoute)
 
