@@ -11,7 +11,8 @@ export class VideoRepoFile {
   constructor(private config: VideoRepoFileConfig) {}
 
   store(filter: VideoFilter, r: Readable): string {
-    const key = randomBytes(16).toString("base64")
+    // const key = randomBytes(16).toString("base64")
+    const key = randomBytes(8).toString("hex")
     const outdir = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}`
     const multipleResolution = [
       // {
@@ -88,11 +89,17 @@ export class VideoRepoFile {
     return key
   }
 
-  get(filter: VideoFilter): Readable {
+  getPlaylist(filter: VideoFilter): Readable {
     let fileName = "playlist.m3u8"
     if (filter.resolution) {
       fileName = `${filter.resolution}.m3u8`
     }
+    const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
+    const readStream = fs.createReadStream(filePath)
+    return readStream
+  }
+  getStream(filter: VideoFilter): Readable {
+    const fileName = filter.streamFile!
     const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
     const readStream = fs.createReadStream(filePath)
     return readStream

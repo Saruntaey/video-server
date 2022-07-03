@@ -6,6 +6,7 @@ export type VideoFilter = {
   id: string
   courseId: string
   resolution?: string
+  streamFile?: string
 }
 
 export type VideoDetail = {

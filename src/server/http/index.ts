@@ -50,9 +50,9 @@ export class HttpServer {
             controls
             preload="auto"
             class="video-js"
-            data-setup="{'fluid': true}"
+            data-setup="{}"
           >
-            <source src="/courses/cal-1/videos/LDETCJ7KyJ9kdhq76flKv?r=240p" type="application/x-mpegURL" />
+            <source src="/playlist?c=cal-1&v=_z1Z2vgCD612EHJ3gu6Me" type="application/x-mpegURL" />
           </video>
           <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
         </body>
@@ -60,8 +60,9 @@ export class HttpServer {
       `
       res.send(html)
     })
-    app.use("/courses", this.videoRoute)
-
+    app.post("/courses/:courseId/videos", this.storeVideo)
+    app.get("/playlist", this.getPlaylist)
+    app.get("/stream", this.streamVideo)
     app.get("/key", this.getKey)
 
     app.listen(this.config.port, () => {
@@ -69,24 +70,39 @@ export class HttpServer {
     })
   }
 
-  private get videoRoute() {
-    const route = express.Router()
-    route.get("/:courseId/videos/:id", this.streamVideo)
-    route.post("/:courseId/videos", this.storeVideo)
-    return route
+  private getPlaylist = (req: Request, res: Response, next: NextFunction) => {
+    const { c: courseId, v: videoId, r: resolution } = req.query
+    if (typeof courseId === "string" && typeof videoId === "string") {
+      const videoFilter: VideoFilter = {
+        id: videoId,
+        courseId,
+        resolution: typeof resolution === "string" ? resolution : undefined,
+      }
+      const readable = this.videoService.getPlaylist(videoFilter)
+      const readableWithUri = this.attachVideoUri(readable, courseId, videoId)
+      readableWithUri.pipe(res)
+      return
+    }
+    res.status(400).send()
   }
 
   private streamVideo = (req: Request, res: Response, next: NextFunction) => {
-    const { id, courseId } = req.params
-    const { r } = req.query
-    const videoFilter: VideoFilter = {
-      id,
-      courseId,
-      resolution: typeof r === "string" ? r : undefined,
+    const { c: courseId, v: videoId, f: streamFile } = req.query
+    if (
+      typeof courseId === "string" &&
+      typeof videoId === "string" &&
+      typeof streamFile === "string"
+    ) {
+      const videoFilter: VideoFilter = {
+        id: videoId,
+        courseId,
+        streamFile,
+      }
+      const readable = this.videoService.stream(videoFilter)
+      readable.pipe(res)
+      return
     }
-    const readable = this.videoService.serve(videoFilter)
-    const readableWithUri = this.attachVideoUri(readable, courseId, id)
-    readableWithUri.pipe(res)
+    res.status(400).send()
   }
 
   private storeVideo = (req: Request, res: Response, next: NextFunction) => {
@@ -113,7 +129,7 @@ export class HttpServer {
       res.send(key)
       return
     }
-    res.send(400)
+    res.status(400).send()
   }
 
   private attachVideoUri = (
@@ -146,9 +162,15 @@ export class HttpServer {
           readable.push(`${line}\n`)
         }
       } else {
-        readable.push(
-          `${this.config.domain}/courses/${courseId}/video/${videoId}/${line}\n`,
-        )
+        if (line.split(".").length > 1) {
+          readable.push(
+            `${this.config.domain}/stream?c=${courseId}&v=${videoId}&f=${line}\n`,
+          )
+        } else {
+          readable.push(
+            `${this.config.domain}/playlist?c=${courseId}&v=${videoId}&r=${line}\n`,
+          )
+        }
       }
     })
     rl.on("close", () => {

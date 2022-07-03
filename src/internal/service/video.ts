@@ -27,8 +27,13 @@ export class VideoService {
     return id
   }
 
-  serve(videoFilter: VideoFilter): Readable {
-    const readable = this.videoRepo.get(videoFilter)
+  getPlaylist(videoFilter: VideoFilter): Readable {
+    const readable = this.videoRepo.getPlaylist(videoFilter)
+    return readable
+  }
+
+  stream(videoFilter: VideoFilter): Readable {
+    const readable = this.videoRepo.getStream(videoFilter)
     return readable
   }
 

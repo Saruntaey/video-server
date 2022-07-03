@@ -25,7 +25,7 @@ import path from "path"
   const httpServerConfig: HttpServerConfig = {
     port: "8080",
     tmpFileDir: path.join(__dirname, "../files/tmp"),
-    domain: "localhost:8080",
+    domain: "http://localhost:8080",
   }
 
   const server = new HttpServer(videoService, httpServerConfig)
