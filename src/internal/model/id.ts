@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid"
+
 export const genId = () => {
-  return "abc"
+  return nanoid()
 }

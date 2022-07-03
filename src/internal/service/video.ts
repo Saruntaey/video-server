@@ -1,19 +1,30 @@
 import { Readable, Writable } from "stream"
 import { VideoRepo } from "../port/repo/video"
 import { genId } from "../model/id"
+import { Video, VideoEncryptInput, VideoDetail } from "../model/video"
 
 export class VideoService {
   constructor(private videoRepo: VideoRepo) {}
 
-  encrypt(r: Readable): string {
+  encrypt(input: VideoEncryptInput, r: Readable): string {
     const id = genId()
-    const videoKey = this.videoRepo.store(r)
-    console.log("key", videoKey)
+    const { courseId } = input
+    const videoFilter: Video = {
+      id,
+      courseId,
+    }
+    const videoKey = this.videoRepo.store(videoFilter, r)
+    const newVideo: VideoDetail = {
+      id,
+      courseId,
+      key: videoKey,
+    }
+    console.log("newVideo", newVideo)
     return id
   }
 
-  serve(id: string, w: Writable): void {
-    const readStream = this.videoRepo.get(id)
+  serve(videoFilter: Video, w: Writable): void {
+    const readStream = this.videoRepo.get(videoFilter)
     readStream.pipe(w)
     readStream.on("error", (err) => {
       console.log("fail to stream video", err)

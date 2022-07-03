@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import { VideoService } from "../../internal/port/service/video"
 import fileUpload from "express-fileupload"
+import { Video, VideoEncryptInput } from "../../internal/model/video"
 
 export type HttpServerConfig = {
   port: string
@@ -30,7 +31,7 @@ export class HttpServer {
     app.get("/", (req: Request, res: Response, next: NextFunction) => {
       res.send("Hello there")
     })
-    app.use("/videos", this.videoRoute)
+    app.use("/courses", this.videoRoute)
 
     app.listen(this.config.port, () => {
       console.log(`Listining on ${this.config.port}`)
@@ -39,25 +40,32 @@ export class HttpServer {
 
   private get videoRoute() {
     const route = express.Router()
-    route.get("/:id", this.streamVideo)
-    route.post("/", this.storeVideo)
+    route.get("/:courseId/videos/:id", this.streamVideo)
+    route.post("/:courseId/videos", this.storeVideo)
     return route
   }
 
   private streamVideo = (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params
-    this.videoService.serve(id, res)
+    const { id, courseId } = req.params
+    const videoFilter: Video = {
+      id,
+      courseId,
+    }
+    this.videoService.serve(videoFilter, res)
   }
 
   private storeVideo = (req: Request, res: Response, next: NextFunction) => {
     if (req.files) {
-      console.log("got files")
+      const { courseId } = req.params
       if (!(req.files.image instanceof Array)) {
         const { tempFilePath, mimetype } = req.files.image
         console.log("path", tempFilePath)
         console.log("mime", mimetype)
         const r = fs.createReadStream(tempFilePath)
-        this.videoService.encrypt(r)
+        const input: VideoEncryptInput = {
+          courseId,
+        }
+        this.videoService.encrypt(input, r)
       }
     }
     res.send("store video")
