@@ -5,8 +5,10 @@ import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
 import { VideoService } from "../../internal/port/service/video"
+import { ErrorService } from "../../internal/port/service/error"
 import fileUpload from "express-fileupload"
 import { VideoFilter, VideoEncryptInput } from "../../internal/model/video"
+import { BaseError } from "../../internal/model/error"
 
 export type HttpServerConfig = {
   port: string
@@ -17,6 +19,7 @@ export type HttpServerConfig = {
 export class HttpServer {
   constructor(
     private videoService: VideoService,
+    private errService: ErrorService,
     private config: HttpServerConfig,
   ) {}
 
@@ -67,6 +70,17 @@ export class HttpServer {
 
     app.listen(this.config.port, () => {
       console.log(`Listining on ${this.config.port}`)
+    })
+
+    process.on("unhandledRejection", (err) => {
+      throw err
+    })
+
+    process.on("uncaughtException", (err) => {
+      this.errService.logErr(err)
+      if (!(err instanceof BaseError)) {
+        process.exit(1)
+      }
     })
   }
 

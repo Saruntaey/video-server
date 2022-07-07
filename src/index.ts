@@ -3,6 +3,7 @@ import { HttpServer, HttpServerConfig } from "./server/http"
 import { VideoRepoFile, VideoRepoFileConfig } from "./repo/video"
 import { VideoDetailRepoMongo } from "./repo/video-detail"
 import { VideoService } from "./internal/service/video"
+import { ErrorServiceConsole } from "./internal/service/error"
 import path from "path"
 ;(async () => {
   const videoRepoFileConfig: VideoRepoFileConfig = {
@@ -27,8 +28,9 @@ import path from "path"
     tmpFileDir: path.join(__dirname, "../files/tmp"),
     domain: "http://localhost:8080",
   }
+  const errorService = new ErrorServiceConsole()
 
-  const server = new HttpServer(videoService, httpServerConfig)
+  const server = new HttpServer(videoService, errorService, httpServerConfig)
 
   server.start()
 })()

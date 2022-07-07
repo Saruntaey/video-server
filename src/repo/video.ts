@@ -11,16 +11,9 @@ export class VideoRepoFile {
   constructor(private config: VideoRepoFileConfig) {}
 
   store(filter: VideoFilter, r: Readable): string {
-    // const key = randomBytes(16).toString("base64")
     const key = randomBytes(8).toString("hex")
     const outdir = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}`
     const multipleResolution = [
-      // {
-      //   output: "1080p.m3u8",
-      //   videoBitrate: "5000",
-      //   audioBitrate: "192",
-      //   size: "1920x1080",
-      // },
       {
         output: "720p",
         videoBitrate: "2400",
