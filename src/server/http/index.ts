@@ -133,32 +133,38 @@ export class HttpServer {
     }
   }
 
+  private extractStreamVideoInput(input: any): VideoFilter {
+    const { c: courseId, v: videoId, f: streamFile } = input
+    const invalidArgDetail: InvalidArgDetail[] = []
+    if (!courseId || typeof courseId !== "string") {
+      invalidArgDetail.push({ field: "c", detail: "required as courseId" })
+    }
+    if (!videoId || typeof videoId !== "string") {
+      invalidArgDetail.push({ field: "v", detail: "required as videoId" })
+    }
+    if (!streamFile || typeof streamFile !== "string") {
+      invalidArgDetail.push({ field: "f", detail: "required as file name" })
+    }
+    if (invalidArgDetail.length !== 0) {
+      throw new InvalidArgErr(invalidArgDetail)
+    }
+    return {
+      id: videoId,
+      courseId,
+      streamFile,
+    }
+  }
+
   private streamVideo = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const { c: courseId, v: videoId, f: streamFile } = req.query
-      if (
-        typeof courseId === "string" &&
-        typeof videoId === "string" &&
-        typeof streamFile === "string"
-      ) {
-        const videoFilter: VideoFilter = {
-          id: videoId,
-          courseId,
-          streamFile,
-        }
-        const readable = await this.videoService.getStream(videoFilter)
-        readable.pipe(res)
-        return
-      }
-      throw new InvalidArgErr([
-        { field: "c", detail: "required as courseId" },
-        { field: "v", detail: "required as videoId" },
-        { field: "f", detail: "required as file name" },
-      ])
+      const videoFilter = this.extractStreamVideoInput(req.query)
+      const readable = await this.videoService.getStream(videoFilter)
+      readable.pipe(res)
+      return
     } catch (err) {
       next(err)
     }
