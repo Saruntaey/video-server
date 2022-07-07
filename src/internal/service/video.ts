@@ -1,8 +1,9 @@
 import { Readable, Writable } from "stream"
-import { VideoRepo } from "../port/repo/video"
-import { VideoDetailRepo } from "../port/repo/video-detail"
-import { genId } from "../model/id"
-import { VideoFilter, VideoEncryptInput, VideoDetail } from "../model/video"
+import { VideoRepo } from "@port/repo/video"
+import { VideoDetailRepo } from "@port/repo/video-detail"
+import { genId } from "@model/id"
+import { VideoFilter, VideoEncryptInput, VideoDetail } from "@model/video"
+import { NotFoundErr } from "@model/error"
 
 export class VideoService {
   constructor(
@@ -37,11 +38,11 @@ export class VideoService {
     return readable
   }
 
-  async getKey(videoId: string): Promise<string | null> {
+  async getKey(videoId: string): Promise<string> {
     const record = await this.videoDeatilRepo.get(videoId)
-    if (record) {
-      return record.key
+    if (!record) {
+      throw new NotFoundErr("not found key")
     }
-    return null
+    return record.key
   }
 }
