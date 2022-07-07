@@ -187,14 +187,26 @@ export class HttpServer {
     res.send("store video")
   }
 
+  private extractGetKeyInput(input: any): string {
+    const { v: videoId } = input
+    const invalidArgDetail: InvalidArgDetail[] = []
+    if (!videoId || typeof videoId !== "string") {
+      invalidArgDetail.push({ field: "v", detail: "required as videoId" })
+    }
+    if (invalidArgDetail.length !== 0) {
+      throw new InvalidArgErr(invalidArgDetail)
+    }
+    return videoId
+  }
+
   private getKey = async (req: Request, res: Response, next: NextFunction) => {
-    const { v: videoId } = req.query
-    if (typeof videoId === "string") {
+    try {
+      const videoId = this.extractGetKeyInput(req.query)
       const key = await this.videoService.getKey(videoId)
       res.send(key)
-      return
+    } catch (err) {
+      next(err)
     }
-    res.status(400).send()
   }
 
   private attachVideoUri = (
@@ -254,6 +266,7 @@ export class HttpServer {
       res.status(err.code).json(err.response)
       return
     }
+    this.errService.logErr(err)
     const e = new InternalErr()
     res.status(e.code).json(e.response)
   }
