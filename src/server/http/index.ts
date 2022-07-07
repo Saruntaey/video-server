@@ -4,11 +4,11 @@ import readline from "readline"
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
-import { VideoService } from "../../internal/port/service/video"
-import { ErrorService } from "../../internal/port/service/error"
 import fileUpload from "express-fileupload"
-import { VideoFilter, VideoEncryptInput } from "../../internal/model/video"
-import { BaseError } from "../../internal/model/error"
+import { VideoService } from "@port/service/video"
+import { ErrorService } from "@port/service/error"
+import { VideoFilter, VideoEncryptInput } from "@model/video"
+import { BaseError } from "@model/error"
 
 export type HttpServerConfig = {
   port: string

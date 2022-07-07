@@ -1,5 +1,5 @@
 import { Collection, Db } from "mongodb"
-import { VideoDetail } from "../internal/model/video"
+import { VideoDetail } from "@model/video"
 import { MongoCollection } from "./mongo-collection"
 
 type VideoDetailMongo = {

@@ -1,10 +1,11 @@
-import { MongoClient } from "mongodb"
-import { HttpServer, HttpServerConfig } from "./server/http"
-import { VideoRepoFile, VideoRepoFileConfig } from "./repo/video"
-import { VideoDetailRepoMongo } from "./repo/video-detail"
-import { VideoService } from "./internal/service/video"
-import { ErrorServiceConsole } from "./internal/service/error"
+import "./bootstrap-paths"
 import path from "path"
+import { MongoClient } from "mongodb"
+import { HttpServer, HttpServerConfig } from "@server/http"
+import { VideoRepoFile, VideoRepoFileConfig } from "@repo/video"
+import { VideoDetailRepoMongo } from "@repo/video-detail"
+import { VideoService } from "@service/video"
+import { ErrorServiceConsole } from "@service/error"
 ;(async () => {
   const videoRepoFileConfig: VideoRepoFileConfig = {
     ourFileDir: path.join(__dirname, "../files/videos"),

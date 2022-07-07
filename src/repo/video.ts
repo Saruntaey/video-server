@@ -1,8 +1,8 @@
 import fs from "fs"
 import { Readable } from "stream"
 import ffmpeg from "fluent-ffmpeg"
-import { VideoFilter } from "../internal/model/video"
 import { randomBytes } from "crypto"
+import { VideoFilter } from "@model/video"
 
 export type VideoRepoFileConfig = {
   ourFileDir: string
