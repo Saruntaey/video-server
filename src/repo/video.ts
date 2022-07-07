@@ -3,6 +3,7 @@ import { Readable } from "stream"
 import ffmpeg from "fluent-ffmpeg"
 import { randomBytes } from "crypto"
 import { VideoFilter } from "@model/video"
+import { NotFoundErr } from "@model/error"
 
 export type VideoRepoFileConfig = {
   ourFileDir: string
@@ -91,10 +92,21 @@ export class VideoRepoFile {
     const readStream = fs.createReadStream(filePath)
     return readStream
   }
-  getStream(filter: VideoFilter): Readable {
-    const fileName = filter.streamFile!
-    const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
-    const readStream = fs.createReadStream(filePath)
-    return readStream
+  getStream(filter: VideoFilter): Promise<Readable> {
+    return new Promise((resolve, reject) => {
+      const fileName = filter.streamFile!
+      const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
+      const readStream = fs.createReadStream(filePath)
+      readStream.on("error", (err: any) => {
+        if ("code" in err && err.code === "ENOENT") {
+          reject(new NotFoundErr("not found video"))
+          return
+        }
+        reject(err)
+      })
+      readStream.on("open", () => {
+        resolve(readStream)
+      })
+    })
   }
 }

@@ -32,8 +32,8 @@ export class VideoService {
     return readable
   }
 
-  stream(videoFilter: VideoFilter): Readable {
-    const readable = this.videoRepo.getStream(videoFilter)
+  async getStream(videoFilter: VideoFilter): Promise<Readable> {
+    const readable = await this.videoRepo.getStream(videoFilter)
     return readable
   }
 

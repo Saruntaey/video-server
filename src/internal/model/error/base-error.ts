@@ -1,7 +1,19 @@
 import { ErrorCode } from "./error-code"
+import { ErrorType } from "./error-type"
 
-export class BaseError extends Error {
-  constructor(public detail: string, public code: ErrorCode) {
-    super(detail)
+export abstract class BaseError extends Error {
+  constructor(
+    public detail: any,
+    public type: ErrorType,
+    public code: ErrorCode,
+  ) {
+    super(JSON.stringify(detail))
+  }
+
+  get response() {
+    return {
+      type: this.type,
+      detail: this.detail,
+    }
   }
 }

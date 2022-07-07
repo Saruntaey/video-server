@@ -8,7 +8,7 @@ import fileUpload from "express-fileupload"
 import { VideoService } from "@port/service/video"
 import { ErrorService } from "@port/service/error"
 import { VideoFilter, VideoEncryptInput } from "@model/video"
-import { BaseError } from "@model/error"
+import { BaseError, InvalidArgErr, InternalErr } from "@model/error"
 
 export type HttpServerConfig = {
   port: string
@@ -68,6 +68,8 @@ export class HttpServer {
     app.get("/stream", this.streamVideo)
     app.get("/key", this.getKey)
 
+    app.use(this.errorHandler)
+
     app.listen(this.config.port, () => {
       console.log(`Listining on ${this.config.port}`)
     })
@@ -77,8 +79,8 @@ export class HttpServer {
     })
 
     process.on("uncaughtException", (err) => {
-      this.errService.logErr(err)
       if (!(err instanceof BaseError)) {
+        this.errService.logErr(err)
         process.exit(1)
       }
     })
@@ -100,23 +102,35 @@ export class HttpServer {
     res.status(400).send()
   }
 
-  private streamVideo = (req: Request, res: Response, next: NextFunction) => {
-    const { c: courseId, v: videoId, f: streamFile } = req.query
-    if (
-      typeof courseId === "string" &&
-      typeof videoId === "string" &&
-      typeof streamFile === "string"
-    ) {
-      const videoFilter: VideoFilter = {
-        id: videoId,
-        courseId,
-        streamFile,
+  private streamVideo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { c: courseId, v: videoId, f: streamFile } = req.query
+      if (
+        typeof courseId === "string" &&
+        typeof videoId === "string" &&
+        typeof streamFile === "string"
+      ) {
+        const videoFilter: VideoFilter = {
+          id: videoId,
+          courseId,
+          streamFile,
+        }
+        const readable = await this.videoService.getStream(videoFilter)
+        readable.pipe(res)
+        return
       }
-      const readable = this.videoService.stream(videoFilter)
-      readable.pipe(res)
-      return
+      throw new InvalidArgErr([
+        { field: "c", detail: "required as courseId" },
+        { field: "v", detail: "required as videoId" },
+        { field: "f", detail: "required as file name" },
+      ])
+    } catch (err) {
+      next(err)
     }
-    res.status(400).send()
   }
 
   private storeVideo = (req: Request, res: Response, next: NextFunction) => {
@@ -191,5 +205,19 @@ export class HttpServer {
       readable.push(null)
     })
     return readable
+  }
+
+  private errorHandler(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    if (err instanceof BaseError) {
+      res.status(err.code).json(err.response)
+      return
+    }
+    const e = new InternalErr()
+    res.status(e.code).json(e.response)
   }
 }
