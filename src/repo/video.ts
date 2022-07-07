@@ -83,14 +83,25 @@ export class VideoRepoFile {
     return key
   }
 
-  getPlaylist(filter: VideoFilter): Readable {
-    let fileName = "playlist.m3u8"
-    if (filter.resolution) {
-      fileName = `${filter.resolution}.m3u8`
-    }
-    const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
-    const readStream = fs.createReadStream(filePath)
-    return readStream
+  getPlaylist(filter: VideoFilter): Promise<Readable> {
+    return new Promise((resolve, reject) => {
+      let fileName = "playlist.m3u8"
+      if (filter.resolution) {
+        fileName = `${filter.resolution}.m3u8`
+      }
+      const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
+      const readStream = fs.createReadStream(filePath)
+      readStream.on("error", (err: any) => {
+        if ("code" in err && err.code === "ENOENT") {
+          reject(new NotFoundErr("not found playlist"))
+          return
+        }
+        reject(err)
+      })
+      readStream.on("open", () => {
+        resolve(readStream)
+      })
+    })
   }
   getStream(filter: VideoFilter): Promise<Readable> {
     return new Promise((resolve, reject) => {

@@ -27,8 +27,8 @@ export class VideoService {
     return id
   }
 
-  getPlaylist(videoFilter: VideoFilter): Readable {
-    const readable = this.videoRepo.getPlaylist(videoFilter)
+  async getPlaylist(videoFilter: VideoFilter): Promise<Readable> {
+    const readable = await this.videoRepo.getPlaylist(videoFilter)
     return readable
   }
 

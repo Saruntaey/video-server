@@ -8,7 +8,12 @@ import fileUpload from "express-fileupload"
 import { VideoService } from "@port/service/video"
 import { ErrorService } from "@port/service/error"
 import { VideoFilter, VideoEncryptInput } from "@model/video"
-import { BaseError, InvalidArgErr, InternalErr } from "@model/error"
+import {
+  BaseError,
+  InvalidArgErr,
+  InternalErr,
+  InvalidArgDetail,
+} from "@model/error"
 
 export type HttpServerConfig = {
   port: string
@@ -86,20 +91,45 @@ export class HttpServer {
     })
   }
 
-  private getPlaylist = (req: Request, res: Response, next: NextFunction) => {
-    const { c: courseId, v: videoId, r: resolution } = req.query
-    if (typeof courseId === "string" && typeof videoId === "string") {
-      const videoFilter: VideoFilter = {
-        id: videoId,
-        courseId,
-        resolution: typeof resolution === "string" ? resolution : undefined,
+  private getPlaylist = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { c: courseId, v: videoId, r: resolution } = req.query
+      const invalidArgDetail: InvalidArgDetail[] = []
+      if (!courseId || typeof courseId !== "string") {
+        invalidArgDetail.push({ field: "c", detail: "required as courseId" })
       }
-      const readable = this.videoService.getPlaylist(videoFilter)
-      const readableWithUri = this.attachVideoUri(readable, courseId, videoId)
+      if (!videoId || typeof videoId !== "string") {
+        invalidArgDetail.push({ field: "v", detail: "required as videoId" })
+      }
+      if (resolution && typeof resolution !== "string") {
+        invalidArgDetail.push({
+          field: "r",
+          detail: "should be string of resoution",
+        })
+      }
+      if (invalidArgDetail.length !== 0) {
+        throw new InvalidArgErr(invalidArgDetail)
+      }
+
+      const videoFilter: VideoFilter = {
+        id: videoId as string,
+        courseId: courseId as string,
+        resolution: resolution as string | undefined,
+      }
+      const readable = await this.videoService.getPlaylist(videoFilter)
+      const readableWithUri = this.attachVideoUri(
+        readable,
+        courseId as string,
+        videoId as string,
+      )
       readableWithUri.pipe(res)
-      return
+    } catch (err) {
+      next(err)
     }
-    res.status(400).send()
   }
 
   private streamVideo = async (

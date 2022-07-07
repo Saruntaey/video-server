@@ -2,7 +2,7 @@ import { BaseError } from "./base-error"
 import { ErrorCode } from "./error-code"
 import { ErrorType } from "./error-type"
 
-type InvalidArgDetail = {
+export type InvalidArgDetail = {
   field: string
   detail: string
 }
