@@ -91,41 +91,42 @@ export class HttpServer {
     })
   }
 
+  private extractPlaylistInput(input: any): VideoFilter {
+    const { c: courseId, v: videoId, r: resolution } = input
+    const invalidArgDetail: InvalidArgDetail[] = []
+    if (!courseId || typeof courseId !== "string") {
+      invalidArgDetail.push({ field: "c", detail: "required as courseId" })
+    }
+    if (!videoId || typeof videoId !== "string") {
+      invalidArgDetail.push({ field: "v", detail: "required as videoId" })
+    }
+    if (resolution && typeof resolution !== "string") {
+      invalidArgDetail.push({
+        field: "r",
+        detail: "should be string of resoution",
+      })
+    }
+    if (invalidArgDetail.length !== 0) {
+      throw new InvalidArgErr(invalidArgDetail)
+    }
+    return {
+      id: videoId,
+      courseId,
+      resolution,
+    }
+  }
+
   private getPlaylist = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ) => {
     try {
-      const { c: courseId, v: videoId, r: resolution } = req.query
-      const invalidArgDetail: InvalidArgDetail[] = []
-      if (!courseId || typeof courseId !== "string") {
-        invalidArgDetail.push({ field: "c", detail: "required as courseId" })
-      }
-      if (!videoId || typeof videoId !== "string") {
-        invalidArgDetail.push({ field: "v", detail: "required as videoId" })
-      }
-      if (resolution && typeof resolution !== "string") {
-        invalidArgDetail.push({
-          field: "r",
-          detail: "should be string of resoution",
-        })
-      }
-      if (invalidArgDetail.length !== 0) {
-        throw new InvalidArgErr(invalidArgDetail)
-      }
-
-      const videoFilter: VideoFilter = {
-        id: videoId as string,
-        courseId: courseId as string,
-        resolution: resolution as string | undefined,
-      }
+      const videoFilter = this.extractPlaylistInput(req.query)
       const readable = await this.videoService.getPlaylist(videoFilter)
-      const readableWithUri = this.attachVideoUri(
-        readable,
-        courseId as string,
-        videoId as string,
-      )
+
+      const { id: videoId, courseId } = videoFilter
+      const readableWithUri = this.attachVideoUri(readable, courseId, videoId)
       readableWithUri.pipe(res)
     } catch (err) {
       next(err)
