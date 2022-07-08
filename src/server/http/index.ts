@@ -86,6 +86,7 @@ export class HttpServer {
     process.on("uncaughtException", (err) => {
       if (!(err instanceof BaseError)) {
         this.errService.logErr(err)
+        // TODO clean up resource before exit
         process.exit(1)
       }
     })
@@ -269,5 +270,7 @@ export class HttpServer {
     this.errService.logErr(err)
     const e = new InternalErr()
     res.status(e.code).json(e.response)
+    // TODO clean up resource before exit
+    process.exit(1)
   }
 }
