@@ -48,8 +48,11 @@ export class HttpServer extends EventEmiter {
       }),
     )
 
-    app.get("/", (req: Request, res: Response, next: NextFunction) => {
-      const html = `
+    app.get(
+      "/watch/courses/:courseId/videos/:videoId",
+      (req: Request, res: Response, next: NextFunction) => {
+        const { courseId, videoId } = req.params
+        const html = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -67,14 +70,15 @@ export class HttpServer extends EventEmiter {
             class="video-js"
             data-setup="{}"
           >
-            <source src="/playlist?c=cal-1&v=_z1Z2vgCD612EHJ3gu6Me" type="application/x-mpegURL" />
+            <source src="/playlist?c=${courseId}&v=${videoId}" type="application/x-mpegURL" />
           </video>
           <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
         </body>
       </html>
       `
-      res.send(html)
-    })
+        res.send(html)
+      },
+    )
     app.post("/courses/:courseId/videos", this.storeVideo)
     app.get("/playlist", this.getPlaylist)
     app.get("/stream", this.streamVideo)
