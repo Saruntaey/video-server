@@ -29,12 +29,13 @@ export class VideoRepoFile {
           size: "426x240",
         },
       ]
+      const keyFile = `${filter.courseId}_${filter.id}.key`
       const outputOptions = [
         "-hls_time 10",
         "-hls_playlist_type vod",
         "-hls_enc 1",
         `-hls_enc_key ${key}`,
-        `-hls_enc_key_url ${filter.courseId}_${filter.id}.key`,
+        `-hls_enc_key_url ${keyFile}`,
       ]
       const command = ffmpeg(r).videoCodec("libx264").audioCodec("aac")
       if (!fs.existsSync(outdir)) {
@@ -72,6 +73,11 @@ export class VideoRepoFile {
         })
         .on("end", function (err, stdout, stderr) {
           playlistContent.close()
+          fs.unlink(keyFile, (err) => {
+            if (err) {
+              throw err
+            }
+          })
           console.log("Finished processing!" /*, err, stdout, stderr*/)
           resolve(key)
         })
