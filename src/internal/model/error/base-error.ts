@@ -7,14 +7,7 @@ export abstract class BaseError extends Error {
     public type: ErrorType,
     public code: ErrorCode,
   ) {
-    let message: string
-    if (typeof detail === "string") {
-      message = detail
-    } else {
-      message = JSON.stringify(detail)
-    }
-
-    super(message)
+    super(typeof detail === "string" ? detail : JSON.stringify(detail))
   }
 
   get response() {

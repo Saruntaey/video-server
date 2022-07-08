@@ -1,7 +1,7 @@
 import "./bootstrap-paths"
 import path from "path"
 import { MongoClient } from "mongodb"
-import { HttpServer, HttpServerConfig } from "@server/http"
+import { HttpServer, HttpServerConfig, HttpServerEvent } from "@server/http"
 import { VideoRepoFile, VideoRepoFileConfig } from "@repo/video"
 import { VideoDetailRepoMongo } from "@repo/video-detail"
 import { VideoService } from "@service/video"
@@ -17,7 +17,7 @@ import { ErrorServiceConsole } from "@service/error"
     "mongodb://localhost:27017/khampee",
   ).catch((e) => {
     console.log("fail to connect mongodb:", e)
-    process.exit(0)
+    process.exit(1)
   })
   const db = client.db("khampee")
 
@@ -34,4 +34,9 @@ import { ErrorServiceConsole } from "@service/error"
   const server = new HttpServer(videoService, errorService, httpServerConfig)
 
   server.start()
+  server.on(HttpServerEvent.ServerClosed, async () => {
+    // TODO should close mongo client after all process finish!
+    await client.close()
+    console.log("gracefully shudown...")
+  })
 })()

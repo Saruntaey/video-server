@@ -1,6 +1,7 @@
 import fs from "fs"
 import { Readable } from "stream"
 import readline from "readline"
+import EventEmiter from "events"
 import express, { Request, Response, NextFunction } from "express"
 import bodyParser from "body-parser"
 import cors from "cors"
@@ -15,18 +16,24 @@ import {
   InvalidArgDetail,
 } from "@model/error"
 
+export enum HttpServerEvent {
+  ServerClosed = "server_closed",
+}
+
 export type HttpServerConfig = {
   port: string
   tmpFileDir: string
   domain: string
 }
 
-export class HttpServer {
+export class HttpServer extends EventEmiter {
   constructor(
     private videoService: VideoService,
     private errService: ErrorService,
     private config: HttpServerConfig,
-  ) {}
+  ) {
+    super()
+  }
 
   public start = () => {
     const app = express()
@@ -75,7 +82,7 @@ export class HttpServer {
 
     app.use(this.errorHandler)
 
-    app.listen(this.config.port, () => {
+    const server = app.listen(this.config.port, () => {
       console.log(`Listining on ${this.config.port}`)
     })
 
@@ -86,9 +93,16 @@ export class HttpServer {
     process.on("uncaughtException", (err) => {
       if (!(err instanceof BaseError)) {
         this.errService.logErr(err)
-        // TODO clean up resource before exit
-        process.exit(1)
+        process.emit("SIGTERM")
       }
+    })
+
+    process.on("SIGTERM", () => {
+      console.log("recieve sigterm")
+      server.close(() => {
+        console.log("server closed")
+        this.emit(HttpServerEvent.ServerClosed)
+      })
     })
   }
 
@@ -270,7 +284,6 @@ export class HttpServer {
     this.errService.logErr(err)
     const e = new InternalErr()
     res.status(e.code).json(e.response)
-    // TODO clean up resource before exit
-    process.exit(1)
+    process.emit("SIGTERM")
   }
 }
