@@ -185,21 +185,54 @@ export class HttpServer extends EventEmiter {
     }
   }
 
-  private storeVideo = (req: Request, res: Response, next: NextFunction) => {
-    if (req.files) {
-      const { courseId } = req.params
-      if (!(req.files.image instanceof Array)) {
-        const { tempFilePath, mimetype } = req.files.image
-        console.log("path", tempFilePath)
-        console.log("mime", mimetype)
-        const r = fs.createReadStream(tempFilePath)
-        const input: VideoEncryptInput = {
-          courseId,
-        }
-        this.videoService.encrypt(input, r)
-      }
+  private extractStoreVideoInput = (
+    req: Request,
+  ): { courseId: string; tempFilePath: string } => {
+    const invalidArgDetail: InvalidArgDetail[] = []
+    if (!req.files?.video) {
+      invalidArgDetail.push({ field: "video", detail: "required" })
     }
-    res.send("store video")
+    if (req.files?.video && req.files.video instanceof Array) {
+      invalidArgDetail.push({
+        field: "video",
+        detail: "required and support only one video",
+      })
+    }
+    if (invalidArgDetail.length !== 0) {
+      throw new InvalidArgErr(invalidArgDetail)
+    }
+    const { tempFilePath } = req.files!.video as fileUpload.UploadedFile
+    const { courseId } = req.params
+    return {
+      courseId,
+      tempFilePath,
+    }
+  }
+
+  private storeVideo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { courseId, tempFilePath } = this.extractStoreVideoInput(req)
+      const r = fs.createReadStream(tempFilePath)
+      const input: VideoEncryptInput = {
+        courseId,
+      }
+      r.on("close", () => {
+        fs.unlink(tempFilePath, (err) => {
+          if (err) {
+            throw err
+          }
+        })
+      })
+      this.videoService.encrypt(input, r)
+
+      res.send("video encrypting")
+    } catch (err) {
+      next(err)
+    }
   }
 
   private extractGetKeyInput(input: any): string {
@@ -271,12 +304,12 @@ export class HttpServer extends EventEmiter {
     return readable
   }
 
-  private errorHandler(
+  private errorHandler = (
     err: Error,
     req: Request,
     res: Response,
     next: NextFunction,
-  ) {
+  ) => {
     if (err instanceof BaseError) {
       res.status(err.code).json(err.response)
       return

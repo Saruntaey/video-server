@@ -18,7 +18,7 @@ export class VideoService {
       id,
       courseId,
     }
-    const videoKey = this.videoRepo.store(videoFilter, r)
+    const videoKey = await this.videoRepo.store(videoFilter, r)
     const newVideo: VideoDetail = {
       id,
       courseId,
