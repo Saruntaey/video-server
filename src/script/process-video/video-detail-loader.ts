@@ -7,7 +7,7 @@ interface Loader {
 export class VideoDetailLoaderCsv {
   constructor(private loader: Loader) {}
 
-  run(): VideoDetail[] {
+  load(): VideoDetail[] {
     const rawData = this.loader.load()
     return rawData.map((row) => {
       return {

@@ -6,7 +6,7 @@ import { VideoFilter } from "@model/video"
 import { NotFoundErr } from "@model/error"
 
 export type VideoRepoFileConfig = {
-  ourFileDir: string
+  outFileDir: string
 }
 export class VideoRepoFile {
   constructor(private config: VideoRepoFileConfig) {}
@@ -14,7 +14,7 @@ export class VideoRepoFile {
   store(filter: VideoFilter, r: Readable): Promise<string> {
     return new Promise((resolve, reject) => {
       const key = randomBytes(8).toString("hex")
-      const outdir = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}`
+      const outdir = `${this.config.outFileDir}/${filter.courseId}/${filter.id}`
       const multipleResolution = [
         {
           output: "720p",
@@ -97,7 +97,7 @@ export class VideoRepoFile {
       if (filter.resolution) {
         fileName = `${filter.resolution}.m3u8`
       }
-      const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
+      const filePath = `${this.config.outFileDir}/${filter.courseId}/${filter.id}/${fileName}`
       const readStream = fs.createReadStream(filePath)
       readStream.on("error", (err: any) => {
         if ("code" in err && err.code === "ENOENT") {
@@ -114,7 +114,7 @@ export class VideoRepoFile {
   getStream(filter: VideoFilter): Promise<Readable> {
     return new Promise((resolve, reject) => {
       const fileName = filter.streamFile!
-      const filePath = `${this.config.ourFileDir}/${filter.courseId}/${filter.id}/${fileName}`
+      const filePath = `${this.config.outFileDir}/${filter.courseId}/${filter.id}/${fileName}`
       const readStream = fs.createReadStream(filePath)
       readStream.on("error", (err: any) => {
         if ("code" in err && err.code === "ENOENT") {

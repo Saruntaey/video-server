@@ -8,5 +8,6 @@ tsConfigPaths.register({
     "@service/*": ["./internal/service/*"],
     "@repo/*": ["./repo/*"],
     "@server/*": ["./server/*"],
+    "@script/*": ["./script/*"],
   },
 })

@@ -5,3 +5,4 @@ files
 *.key
 db
 .env
+videosrc

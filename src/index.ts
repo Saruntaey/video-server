@@ -9,7 +9,7 @@ import { VideoService } from "@service/video"
 import { ErrorServiceConsole } from "@service/error"
 ;(async () => {
   const videoRepoFileConfig: VideoRepoFileConfig = {
-    ourFileDir: path.join(__dirname, "../files/videos"),
+    outFileDir: path.join(__dirname, "../files/videos"),
   }
 
   const videoRepo = new VideoRepoFile(videoRepoFileConfig)

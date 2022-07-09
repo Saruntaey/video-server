@@ -1,1 +1,2 @@
 courseId,videoName,videoPath
+test-script,first video,./videosrc/source.mp4
