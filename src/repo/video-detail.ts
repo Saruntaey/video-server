@@ -4,6 +4,7 @@ import { MongoCollection } from "./mongo-collection"
 
 type VideoDetailMongo = {
   _id: string
+  videoName: string
   courseId: string
   key: string
 }
@@ -17,7 +18,7 @@ export class VideoDetailRepoMongo {
   async store(v: VideoDetail): Promise<void> {
     await this.collection.updateOne(
       { _id: v.id },
-      { $set: { courseId: v.courseId, key: v.key } },
+      { $set: { videoName: v.videoName, courseId: v.courseId, key: v.key } },
       {
         upsert: true,
       },
@@ -31,6 +32,7 @@ export class VideoDetailRepoMongo {
     }
     return {
       id: v._id,
+      videoName: v.videoName,
       courseId: v.courseId,
       key: v.key,
     }

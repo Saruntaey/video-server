@@ -11,9 +11,9 @@ export class VideoService {
     private videoDeatilRepo: VideoDetailRepo,
   ) {}
 
-  async encrypt(input: VideoEncryptInput, r: Readable): Promise<string> {
+  async encrypt(input: VideoEncryptInput, r: Readable): Promise<VideoDetail> {
     const id = genId()
-    const { courseId } = input
+    const { courseId, videoName } = input
     const videoFilter: VideoFilter = {
       id,
       courseId,
@@ -21,11 +21,12 @@ export class VideoService {
     const videoKey = await this.videoRepo.store(videoFilter, r)
     const newVideo: VideoDetail = {
       id,
+      videoName,
       courseId,
       key: videoKey,
     }
     await this.videoDeatilRepo.store(newVideo)
-    return id
+    return newVideo
   }
 
   async getPlaylist(videoFilter: VideoFilter): Promise<Readable> {

@@ -79,7 +79,7 @@ export class HttpServer extends EventEmiter {
         res.send(html)
       },
     )
-    app.post("/courses/:courseId/videos", this.storeVideo)
+    app.post("/storeVideo", this.storeVideo)
     app.get("/playlist", this.getPlaylist)
     app.get("/stream", this.streamVideo)
     app.get("/key", this.getKey)
@@ -191,8 +191,15 @@ export class HttpServer extends EventEmiter {
 
   private extractStoreVideoInput = (
     req: Request,
-  ): { courseId: string; tempFilePath: string } => {
+  ): { videoName: string; courseId: string; tempFilePath: string } => {
     const invalidArgDetail: InvalidArgDetail[] = []
+    const { videoName, courseId } = req.body
+    if (!videoName || typeof videoName !== "string") {
+      invalidArgDetail.push({ field: "videoName", detail: "required" })
+    }
+    if (!courseId || typeof courseId !== "string") {
+      invalidArgDetail.push({ field: "courseId", detail: "required" })
+    }
     if (!req.files?.video) {
       invalidArgDetail.push({ field: "video", detail: "required" })
     }
@@ -206,8 +213,8 @@ export class HttpServer extends EventEmiter {
       throw new InvalidArgErr(invalidArgDetail)
     }
     const { tempFilePath } = req.files!.video as fileUpload.UploadedFile
-    const { courseId } = req.params
     return {
+      videoName,
       courseId,
       tempFilePath,
     }
@@ -219,9 +226,11 @@ export class HttpServer extends EventEmiter {
     next: NextFunction,
   ) => {
     try {
-      const { courseId, tempFilePath } = this.extractStoreVideoInput(req)
+      const { videoName, courseId, tempFilePath } =
+        this.extractStoreVideoInput(req)
       const r = fs.createReadStream(tempFilePath)
       const input: VideoEncryptInput = {
+        videoName,
         courseId,
       }
       r.on("close", () => {
