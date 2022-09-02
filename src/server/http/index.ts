@@ -1,4 +1,5 @@
 import fs from "fs"
+import path from "path"
 import { Readable } from "stream"
 import readline from "readline"
 import EventEmiter from "events"
@@ -61,53 +62,23 @@ export class HttpServer extends EventEmiter {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <script src="https://cdn.tailwindcss.com"></script>
           <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet" />
+          <link href="/css/videojs-resolution-switcher.css" rel="stylesheet" />
           <title>Document</title>
         </head>
         <body>
           <video
-            id="videoPlayer"
+            id="player"
             controls
             preload="auto"
             class="video-js vjs-big-play-centered vjs-default-skin"
-            data-setup='{"fluid": true, "playbackRates": [0.5, 1, 1.25, 1.5, 1.75, 2]}'
           >
-            <source src="/playlist?c=${courseId}&v=${videoId}" type="application/x-mpegURL" />
+            <source src="/playlist?c=${courseId}&v=${videoId}" type="application/x-mpegURL" label="Auto" />
+            <source src="/playlist?c=${courseId}&v=${videoId}&r=720p" type="application/x-mpegURL" label="720p" />
+            <source src="/playlist?c=${courseId}&v=${videoId}&r=240p" type="application/x-mpegURL" label="240p" />
           </video>
-          <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
 
-          <script>
-          const videoJsResolutionSwitcher = require("videoJsResolutionSwitcher")
-          console.log("work!!")
-          videojs('videoPlayer', {
-            controls: true,
-            plugins: {
-              videoJsResolutionSwitcher: {
-                default: 'low', // Default resolution [{Number}, 'low', 'high'],
-                dynamicLabel: true
-              }
-            }
-          }, function(){
-            var player = this;
-            window.player = player
-            player.updateSrc([
-              {
-                src: 'https://vjs.zencdn.net/v/oceans.mp4?SD',
-                type: 'video/mp4',
-                label: 'SD',
-                res: 360
-              },
-              {
-                src: 'https://vjs.zencdn.net/v/oceans.mp4?HD',
-                type: 'video/mp4',
-                label: 'HD',
-                res: 720
-              }
-            ])
-            player.on('resolutionchange', function(){
-              console.info('Source changed to %s', player.src())
-            })
-          })
-          </script>
+          <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+          <script src="/js/bundle.js" ></script>
 
         </body>
       </html>
@@ -115,6 +86,8 @@ export class HttpServer extends EventEmiter {
         res.send(html)
       },
     )
+
+    app.use(express.static(path.join(process.cwd(), "/public")))
     app.post("/storeVideo", this.storeVideo)
     app.get("/playlist", this.getPlaylist)
     app.get("/stream", this.streamVideo)

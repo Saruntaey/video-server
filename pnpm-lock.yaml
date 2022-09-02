@@ -22,7 +22,7 @@ specifiers:
   tsconfig-paths: ^4.0.0
   typescript: 4.6.4
   video.js: ^7.20.2
-  videojs-resolution-switcher: ^0.4.2
+  videojs-resolution-switcher-vjs7: ^1.0.0
 
 dependencies:
   body-parser: 1.20.0
@@ -36,7 +36,7 @@ dependencies:
   nanoid: 3.3.4
   tsconfig-paths: 4.0.0
   video.js: 7.20.2
-  videojs-resolution-switcher: 0.4.2_video.js@7.20.2
+  videojs-resolution-switcher-vjs7: 1.0.0
 
 devDependencies:
   '@types/body-parser': 1.19.2
@@ -2861,12 +2861,8 @@ packages:
     resolution: {integrity: sha512-g8vHMKK2/JGorSfqAZQUmYYNnXmfec4MLhwtEFS+mMs2IDY398GLysy6BH6K+aS1KMNu/xWZ8Sue/X/mdQPliA==}
     dev: false
 
-  /videojs-resolution-switcher/0.4.2_video.js@7.20.2:
-    resolution: {integrity: sha512-h5N98W929SkbFCG7n0g59mgQQfCw5gqDspD3L68zYqG/R7yf0SSdJn1qrfPn/NricA/I+6W+AvZlD+g60sAiZA==}
-    peerDependencies:
-      video.js: ^5.8
-    dependencies:
-      video.js: 7.20.2
+  /videojs-resolution-switcher-vjs7/1.0.0:
+    resolution: {integrity: sha512-BowDOEJ63lJKThw9WlxAP86vNwjRWsLjYkelJ01wIuFHNLlyJghstfs8U9QZwT5b3Fevbg+cHUVxtvlB9J4s4w==}
     dev: false
 
   /videojs-vtt.js/0.15.4:
