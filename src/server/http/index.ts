@@ -65,14 +65,50 @@ export class HttpServer extends EventEmiter {
         </head>
         <body>
           <video
+            id="videoPlayer"
             controls
             preload="auto"
-            class="video-js"
-            data-setup="{}"
+            class="video-js vjs-big-play-centered vjs-default-skin"
+            data-setup='{"fluid": true, "playbackRates": [0.5, 1, 1.25, 1.5, 1.75, 2]}'
           >
             <source src="/playlist?c=${courseId}&v=${videoId}" type="application/x-mpegURL" />
           </video>
           <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+
+          <script>
+          const videoJsResolutionSwitcher = require("videoJsResolutionSwitcher")
+          console.log("work!!")
+          videojs('videoPlayer', {
+            controls: true,
+            plugins: {
+              videoJsResolutionSwitcher: {
+                default: 'low', // Default resolution [{Number}, 'low', 'high'],
+                dynamicLabel: true
+              }
+            }
+          }, function(){
+            var player = this;
+            window.player = player
+            player.updateSrc([
+              {
+                src: 'https://vjs.zencdn.net/v/oceans.mp4?SD',
+                type: 'video/mp4',
+                label: 'SD',
+                res: 360
+              },
+              {
+                src: 'https://vjs.zencdn.net/v/oceans.mp4?HD',
+                type: 'video/mp4',
+                label: 'HD',
+                res: 720
+              }
+            ])
+            player.on('resolutionchange', function(){
+              console.info('Source changed to %s', player.src())
+            })
+          })
+          </script>
+
         </body>
       </html>
       `
