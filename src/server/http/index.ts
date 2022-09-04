@@ -16,22 +16,17 @@ import {
   InternalErr,
   InvalidArgDetail,
 } from "@model/error"
+import { Config } from "@app/config"
 
 export enum HttpServerEvent {
   ServerClosed = "server_closed",
 }
 
-export type HttpServerConfig = {
-  port: string
-  tmpFileDir: string
-  domain: string
-}
-
 export class HttpServer extends EventEmiter {
   constructor(
+    private config: Config,
     private videoService: VideoService,
     private errService: ErrorService,
-    private config: HttpServerConfig,
   ) {
     super()
   }
@@ -42,12 +37,17 @@ export class HttpServer extends EventEmiter {
     app.use(cors())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
-    app.use(
-      fileUpload({
-        useTempFiles: true,
-        tempFileDir: this.config.tmpFileDir,
-      }),
-    )
+    app.use(express.static(path.join(process.cwd(), "/public")))
+
+    if (this.config.isAllownUploadVideo) {
+      app.use(
+        fileUpload({
+          useTempFiles: true,
+          tmpFileDir: path.join(process.cwd(), "files/tmp"),
+        }),
+      )
+      app.post("/storeVideo", this.storeVideo)
+    }
 
     app.get(
       "/watch/courses/:courseId/videos/:videoId",
@@ -87,16 +87,14 @@ export class HttpServer extends EventEmiter {
       },
     )
 
-    app.use(express.static(path.join(process.cwd(), "/public")))
-    app.post("/storeVideo", this.storeVideo)
     app.get("/playlist", this.getPlaylist)
     app.get("/stream", this.streamVideo)
     app.get("/key", this.getKey)
 
     app.use(this.errorHandler)
 
-    const server = app.listen(this.config.port, () => {
-      console.log(`Listining on ${this.config.port}`)
+    const server = app.listen(this.config.server.port, () => {
+      console.log(`Listining on ${this.config.server.port}`)
     })
 
     process.on("unhandledRejection", (err) => {
@@ -284,6 +282,10 @@ export class HttpServer extends EventEmiter {
     courseId: string,
     videoId: string,
   ): Readable => {
+    let domain = this.config.server.domain
+    if (this.config.isDev) {
+      domain = `${this.config.server.domain}:${this.config.server.port}`
+    }
     const readable = new Readable()
     readable._read = () => {}
     const rl = readline.createInterface({
@@ -299,7 +301,7 @@ export class HttpServer extends EventEmiter {
               readable.push(",")
             }
             if (d.startsWith("URI")) {
-              readable.push(`URI="${this.config.domain}/key?v=${videoId}"`)
+              readable.push(`URI="${domain}/key?v=${videoId}"`)
             } else {
               readable.push(`${d}`)
             }
@@ -311,11 +313,11 @@ export class HttpServer extends EventEmiter {
       } else {
         if (line.split(".").length > 1) {
           readable.push(
-            `${this.config.domain}/stream?c=${courseId}&v=${videoId}&f=${line}\n`,
+            `${domain}/stream?c=${courseId}&v=${videoId}&f=${line}\n`,
           )
         } else {
           readable.push(
-            `${this.config.domain}/playlist?c=${courseId}&v=${videoId}&r=${line}\n`,
+            `${domain}/playlist?c=${courseId}&v=${videoId}&r=${line}\n`,
           )
         }
       }
