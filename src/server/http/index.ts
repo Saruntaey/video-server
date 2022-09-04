@@ -77,6 +77,7 @@ export class HttpServer extends EventEmiter {
           </video>
 
           <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+          <script src="/js/videoApi-server.js" ></script>
           <script src="/js/bundle.js" ></script>
 
         </body>
