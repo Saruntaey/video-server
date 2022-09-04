@@ -67,10 +67,10 @@ export class VideoRepoFile {
       })
 
       command
-        .on("progress", function (progress) {
-          console.log(progress)
-          // console.log("Processing: " + progress.percent.toFixed(2) + "% done")
-        })
+        // .on("progress", function (progress) {
+        //   console.log(progress)
+        //   // console.log("Processing: " + progress.percent.toFixed(2) + "% done")
+        // })
         .on("end", function (err, stdout, stderr) {
           playlistContent.close()
           fs.unlink(keyFile, (err) => {
@@ -78,7 +78,11 @@ export class VideoRepoFile {
               throw err
             }
           })
-          console.log("Finished processing!" /*, err, stdout, stderr*/)
+          console.log(
+            `Finished processing! videoId: ${
+              filter.id
+            }@${new Date().toISOString()}` /*, err, stdout, stderr*/,
+          )
           resolve(key)
         })
         .on("error", (err, stdout, stderr) => {

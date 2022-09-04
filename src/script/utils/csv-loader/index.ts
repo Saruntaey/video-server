@@ -7,8 +7,8 @@ export class CsvLoader {
     const rows = rawData.split("\n")
     const result: string[][] = []
     rows.forEach((row, idx) => {
-      if (idx === 0) {
-        // skip header
+      if (idx === 0 || !row) {
+        // skip header && empty row
         return
       }
       result.push(row.split(",").map((d) => d.trim()))

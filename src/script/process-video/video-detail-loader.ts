@@ -1,4 +1,4 @@
-import { VideoDetail } from "@script/process-video/video-processer"
+import { RawVideoConfig } from "@script/process-video/video-processer"
 
 interface Loader {
   load: () => string[][]
@@ -7,13 +7,14 @@ interface Loader {
 export class VideoDetailLoaderCsv {
   constructor(private loader: Loader) {}
 
-  load(): VideoDetail[] {
+  load(): RawVideoConfig[] {
     const rawData = this.loader.load()
     return rawData.map((row) => {
       return {
         courseId: row[0],
         videoName: row[1],
         videoPath: row[2],
+        videoId: row[3],
       }
     })
   }

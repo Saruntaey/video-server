@@ -12,7 +12,7 @@ export class VideoService {
   ) {}
 
   async encrypt(input: VideoEncryptInput, r: Readable): Promise<VideoDetail> {
-    const id = genId()
+    const id = input.videoId || genId()
     const { courseId, videoName } = input
     const videoFilter: VideoFilter = {
       id,

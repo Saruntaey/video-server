@@ -1,16 +1,18 @@
 import fs from "fs"
 import { Readable } from "stream"
 import path from "path"
+import util from "util"
 import { VideoService } from "@port/service/video"
 
-export type VideoDetail = {
+export type RawVideoConfig = {
   courseId: string
   videoName: string
   videoPath: string
+  videoId?: string
 }
 
 export interface VideoDetailLoader {
-  load: () => VideoDetail[]
+  load: () => RawVideoConfig[]
 }
 
 export interface VideoLoader {
@@ -18,15 +20,37 @@ export interface VideoLoader {
 }
 
 export class VideoProcesser {
+  private videos: RawVideoConfig[] = []
+  private limit: number = 4
   constructor(
     private videoDetailLoader: VideoDetailLoader,
     private videoLoader: VideoLoader,
     private videoService: VideoService,
-  ) {}
+    limit?: number,
+  ) {
+    if (limit) {
+      this.limit = limit
+    }
+  }
 
-  async run() {
-    const videos = this.videoDetailLoader.load()
-    const failVideo: VideoDetail[] = []
+  public async run() {
+    this.videos = this.videoDetailLoader.load()
+    while (this.videos.length) {
+      await this.process()
+    }
+  }
+
+  private async process() {
+    const videos = this.videos.splice(0, this.limit)
+    if (!videos.length) {
+      return
+    }
+    const failVideo: RawVideoConfig[] = []
+    console.log(
+      "working on",
+      util.inspect(videos, false, null, true),
+      `\n@${new Date().toISOString()}`,
+    )
     const videoRecord = await Promise.all(
       videos.map(async (v) => {
         try {
@@ -39,7 +63,11 @@ export class VideoProcesser {
           // throw new Error("stop here")
           const readable = await this.videoLoader.load(videoPath)
           const videoDetail = await this.videoService.encrypt(
-            { courseId: v.courseId, videoName: v.videoName },
+            {
+              courseId: v.courseId,
+              videoName: v.videoName,
+              videoId: v.videoId,
+            },
             readable,
           )
           return videoDetail
@@ -63,9 +91,11 @@ export class VideoProcesser {
     const writable = fs.createWriteStream(
       path.join(__dirname, `video-process-fail_${now.toISOString()}.csv`),
     )
-    writable.write("courseId,videoName,videoPath\n")
+    writable.write("courseId,videoName,videoPath,videoId(opt.)\n")
     failVideo.forEach((v) => {
-      writable.write(`${v.courseId},${v.videoName},${v.videoName}\n`)
+      writable.write(
+        `${v.courseId},${v.videoName},${v.videoPath},${v.videoId}\n`,
+      )
     })
     writable.end()
     console.log("some video fail to process")

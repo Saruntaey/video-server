@@ -1,0 +1,52 @@
+courseId,videoName,videoPath,videoId(opt.)
+
+cal-1,1.1_ลิมิตและความต่อเนื่อง_Part1,./videosrc/1.1 ลิมิตและความต่อเนื่อง Part1-Optimize-computer.m4v,MTE0OTgzNg==
+cal-1,1.2_ลิมิตและความต่อเนื่อง_Part2,./videosrc/1.2 ลิมิตและความต่อเนื่อง Part2 50-Optimize-computer.m4v,MTE1MDExOA==
+cal-1,1.3_ลิมิตและความต่อเนื่อง_Part3,./videosrc/1.3 ลิมิตและความต่อเนื่อง Part3-Optimize-computer.m4v,MTE1MDExOQ==
+cal-1,1.4_ลิมิตและความต่อเนื่อง_Part4,./videosrc/1.4 ลิมิตและความต่อเนื่อง Part4-Optimize-computer.m4v,MTE1MDEyMg==
+
+cal-1,2.1_อนุพันธ์ของฟังก์ชัน_Part1,./videosrc/2.1 อนุพันธ์ของฟังก์ชัน Part1-Optimize-computer.m4v,MTE1MDEyNA==
+cal-1,2.2_อนุพันธ์ของฟังก์ชัน_Part2,./videosrc/2.2 อนุพันธ์ของฟังก์ชัน Part2-Optimize-computer.m4v,MTE1MDEyMQ==
+cal-1,2.3_อนุพันธ์ของฟังก์ชัน_Part3,./videosrc/2.3 อนุพันธ์ของฟังก์ชัน Part3-Optimize-computer.m4v,MTE1MDEyMw==
+cal-1,2.4_อนุพันธ์ของฟังก์ชัน_Part4,./videosrc/2.4 อนุพันธ์ของฟังก์ชัน Part4-Optimize-computer.m4v,MTE1MDEyMA==
+cal-1,2.5_อนุพันธ์ของฟังก์ชัน_Part5,./videosrc/2.5 อนุพันธ์ของฟังก์ชัน Part5-Optimize-computer.m4v,MTE1MDEyNQ==
+
+cal-1,3.1_การอินทิเกรต_Part1,./videosrc/3.1 การอินทิเกรต Part1-Optimize-computer.m4v,MTE1MDEyOQ==
+cal-1,3.2_การอินทิเกรต_Part2,./videosrc/3.2 การอินทิเกรต Part2-Optimize-computer.m4v,MTE1MDEyNg==
+cal-1,3.3_การอินทิเกรต_Part3,./videosrc/3.3 การอินทิเกรต Part3-Optimize-computer.m4v,MTE1MDEyOA==
+cal-1,3.4_การอินทิเกรต_Part4,./videosrc/3.4 การอินทิเกรต Part4-Optimize-computer.m4v,MTE1MDEyNw==
+
+cal-1,4.1_ฟังก์ชันอดิศัย_Part1,./videosrc/4.1 ฟังก์ชันอดิศัย Part1-Optimize-computer.m4v,MTE1MDEzMg==
+cal-1,4.2_ฟังก์ชันอดิศัย_Part2,./videosrc/4.2 ฟังก์ชันอดิศัย Part2-Optimize-computer.m4v,MTE1MDEzMA==
+cal-1,4.3_ฟังก์ชันอดิศัย_Part3,./videosrc/4.3 ฟังก์ชันอดิศัย Part3-Optimize-computer.m4v,MTE1MDEzMQ==
+cal-1,4.4_ฟังก์ชันอดิศัย_Part4,./videosrc/4.4 ฟังก์ชันอดิศัย Part4-Optimize-computer.m4v,MTE1MDEzMw==
+cal-1,4.5_ฟังก์ชันอดิศัย_Part5,./videosrc/4.5 ฟังก์ชันอดิศัย Part5-Optimize-computer.m4v,MTE1MDEzNQ==
+
+cal-1,5.1_การประยุกต์ของอนุพันธ์_Part1,./videosrc/5.1 การประยุกต์ของอนุพันธ์ Part1-Optimize-computer.m4v,MTE1MDEzNw==
+cal-1,5.2_การประยุกต์ของอนุพันธ์_Part2,./videosrc/5.2 การประยุกต์ของอนุพันธ์ Part2-Optimize-computer.m4v,MTE1MDEzNA==
+cal-1,5.3_การประยุกต์ของอนุพันธ์_Part3,./videosrc/5.3 การประยุกต์ของอนุพันธ์ Part3-Optimize-computer.m4v,MTE1MDEzNg==
+cal-1,5.4_การประยุกต์ของอนุพันธ์_Part4,./videosrc/5.4_การประยุกต์ของอนุพันธ์_Part4_Optimized_notebook.m4v,MTE1MDE0Nw==
+cal-1,5.5_การประยุกต์ของอนุพันธ์_Part5,./videosrc/5.5_การประยุกต์ของอนุพันธ์_Part5_Optimized_notebook.m4v,MTE1MDE0NA==
+cal-1,5.6_การประยุกต์ของอนุพันธ์_Part6,./videosrc/5.6_การประยุกต์ของอนุพันธ์_Part6_Optimized_notebook.m4v,MTE1MDE0NQ==
+cal-1,5.7_การประยุกต์ของอนุพันธ์_Part7,./videosrc/5.7_การประยุกต์ของอนุพันธ์_Part7_Optimized_notebook.m4v,MTE1MDE0Mg==
+
+cal-1,6.1_เทคนิคการอินทิเกรต_Part1,./videosrc/6.1 เทคนิคการอินทิเกรต Part1-Optimize-computer.m4v,MTE1MDE0Mw==
+cal-1,6.2_เทคนิคการอินทิเกรต_Part2,./videosrc/6.2 เทคนิคการอินทิเกรต Part2-Optimize-computer.m4v,MTE1MDE0Ng==
+cal-1,6.3_เทคนิคการอินทิเกรต_Part3,./videosrc/6.3 เทคนิคการอินทิเกรต Part3-Optimize-computer.m4v,MTE1MDE0OQ==
+cal-1,6.4_เทคนิคการอินทิเกรต_Part4,./videosrc/6.4 เทคนิคการอินทิเกรต Part4-Optimize-computer.m4v,MTE1MDE1Mg==
+cal-1,6.5_เทคนิคการอินทิเกรต_Part5,./videosrc/6.5 เทคนิคการอินทิเกรต Part5-Optimize-computer.m4v,MTE1MDE1NA==
+cal-1,6.6_เทคนิคการอินทิเกรต_Part6,./videosrc/6.6 เทคนิคการอินทิเกรต Part6-Optimize-computer(1).m4v,MTE1MDE1MA==
+
+cal-1,7.1_การประยุกต์ของอินทิกรัล_Part1,./videosrc/7.1 การประยุกต์ของอินทิกรัล Part1-Optimize-computer.m4v,MTE1MDE1Mw==
+cal-1,7.2_การประยุกต์ของอินทิกรัล_Part2,./videosrc/7.2 การประยุกต์ของอินทิกรัล Part2-Optimize-computer(1).m4v,MTE1MDE1MQ==
+cal-1,7.3_การประยุกต์ของอินทิกรัล_Part3,./videosrc/7.3 การประยุกต์ของอินทิกรัล Part3-Optimize-computer.m4v,MTE1MDE1Ng==
+cal-1,7.4_การประยุกต์ของอินทิกรัล_Part4,./videosrc/7.4 การประยุกต์ของอินทิกรัล Part4-Optimize-computer.m4v,MTE1MDE1Nw==
+cal-1,7.5_การประยุกต์ของอินทิกรัล_Part5,./videosrc/7.5 การประยุกต์ของอินทิกรัล Part5-Optimize-computer.m4v,MTE1MDE1NQ==
+
+cal-1,8.1_อินทิกรัลไม่ตรงแบบ_Part1,./videosrc/8.1 อินทิกรัลไม่ตรงแบบ Part1-Optimize-computer.m4v,MTE1MDE1OA==
+cal-1,8.2_อินทิกรัลไม่ตรงแบบ_Part2,./videosrc/8.2 อินทิกรัลไม่ตรงแบบ Part2-Optimize-computer.m4v,MTE1MDE2MA==
+cal-1,8.3_อินทิกรัลไม่ตรงแบบ_Part3,./videosrc/8.3 อินทิกรัลไม่ตรงแบบ Part3 Editend-Optimize-computer.m4v,MTE1MDE2MQ==
+
+cal-1,Ex1_อนุกรมเทย์เลอร์,./videosrc/Ex1 อนุกรมเทย์เลอร์-Optimized.m4v,MTE1MTM0OQ==
+cal-1,Ex2_การหาค่าประมาณของพื้นที่ใต้เส้นโค้งด้วยกฎสี่เหลี่ยมคางหมู,./videosrc/Ex2 การหาค่าประมาณของพื้นที่ใต้เส้นโค้งด้วยกฎสี่เหลี่ยมคางหมู-Optimized.m4v,MTE1MTM1MA==
+cal-1,Ex3_การหาค่าประมาณของพื้นที่ใต้เส้นโค้งด้วยกฎของซิมป์สัน,./videosrc/Ex3 การหาค่าประมาณของพื้นที่ใต้เส้นโค้งด้วยกฎของซิมป์สัน-Optimized.m4v,MTE1MTM1MQ==

@@ -1,2 +1,5 @@
-courseId,videoName,videoPath
-test-script,first video,./videosrc/source.mp4
+courseId,videoName,videoPath,videoId(opt.)
+cal-1,6.2_เทคนิคการอินทิเกรต_Part2,./videosrc/6.2_เทคนิคการอินทิเกรต_Part2.mp4,MTE1MDE0Ng==
+cal-1,6.3_เทคนิคการอินทิเกรต_Part3,./videosrc/6.3_เทคนิคการอินทิเกรต_Part3.mp4,MTE1MDE0OQ==
+cal-1,6.4_เทคนิคการอินทิเกรต_Part4,./videosrc/6.4_เทคนิคการอินทิเกรต_Part4.mp4,MTE1MDE1Mg==
+cal-1,6.5_เทคนิคการอินทิเกรต_Part5,./videosrc/6.5_เทคนิคการอินทิเกรต_Part5.mp4,MTE1MDE1NA==
