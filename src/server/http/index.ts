@@ -60,7 +60,7 @@ export class HttpServer extends EventEmiter {
           <meta charset="UTF-8" />
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link href="https://vjs.zencdn.net/7.19.2/video-js.css" rel="stylesheet" />
+          <link href="/css/video-js.css" rel="stylesheet" />
           <link href="/css/videojs-resolution-switcher.css" rel="stylesheet" />
           <title>Document</title>
         </head>
@@ -76,7 +76,7 @@ export class HttpServer extends EventEmiter {
             <source src="/playlist?c=${courseId}&v=${videoId}&r=240p" type="application/x-mpegURL" label="240p" />
           </video>
 
-          <script src="https://vjs.zencdn.net/7.19.2/video.min.js"></script>
+          <script src="/js/video.min.js"></script>
           <script src="/js/videoApi-server.js" ></script>
           <script src="/js/bundle.js" ></script>
 
