@@ -6,3 +6,4 @@ files
 db
 .env
 videosrc
+src/script/process-video/logs

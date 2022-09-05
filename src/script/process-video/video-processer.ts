@@ -22,6 +22,7 @@ export interface VideoLoader {
 export class VideoProcesser {
   private videos: RawVideoConfig[] = []
   private limit: number = 4
+  private checkedLogDir: boolean = false
   constructor(
     private videoDetailLoader: VideoDetailLoader,
     private videoLoader: VideoLoader,
@@ -77,9 +78,15 @@ export class VideoProcesser {
       }),
     )
 
+    const logDir = path.join(__dirname, "logs")
+    if (!this.checkedLogDir && !fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir)
+    }
+    this.checkedLogDir = true
+
     const now = new Date()
     fs.writeFileSync(
-      path.join(__dirname, `video-process-success_${now.toISOString()}.json`),
+      path.join(logDir, `video-process-success_${now.toISOString()}.json`),
       JSON.stringify(videoRecord),
     )
 
@@ -89,7 +96,7 @@ export class VideoProcesser {
     }
 
     const writable = fs.createWriteStream(
-      path.join(__dirname, `video-process-fail_${now.toISOString()}.csv`),
+      path.join(logDir, `video-process-fail_${now.toISOString()}.csv`),
     )
     writable.write("courseId,videoName,videoPath,videoId(opt.)\n")
     failVideo.forEach((v) => {
