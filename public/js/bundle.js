@@ -70161,9 +70161,12 @@ require("videojs-resolution-switcher-vjs7/videojs-resolution-switcher")
 
 const player = videojs("player", {
   fluid: true,
-  controlBar: {
-    fullscreenToggle: false,
-  },
+
+  // this will break resolution btn
+  // controlBar: {
+  //   fullscreenToggle: false,
+  // },
+
   playbackRates: [0.5, 1, 1.25, 1.5, 1.75, 2],
   plugins: {
     videoJsResolutionSwitcher: {
