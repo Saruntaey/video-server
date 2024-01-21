@@ -7,3 +7,6 @@ db
 .env
 videosrc
 src/script/process-video/logs*
+*_fail.csv
+*_success.csv
+log

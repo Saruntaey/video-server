@@ -1,0 +1,3 @@
+courseId,videoName,videoPath,videoId(opt.)
+eng_local,FIPT_LOCALENG_SS3_EP3 ion.mp4,./videosrc/eng_local/FIPT_LOCALENG_SS3_EP3 ion.mp4,
+eng_local,FIPT_LOCALENG_SS4_EP2 ion.mp4,./videosrc/eng_local/FIPT_LOCALENG_SS4_EP2 ion.mp4,
